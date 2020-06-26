@@ -35,6 +35,32 @@ const NewTask = bind(
   ["addTodo"]
 )
 
+const TodoDone = ({ todo }) => (
+  <div style={style.todo}>
+    <s>{todo.task}</s>
+    <div style={style.emptyBtn}/>
+  </div>
+)
+
+const TodoUndone = ({ todo }) => (
+  <div style={style.todo}>
+    <div style={style.task}>{todo.task}</div>
+    <div
+      style={style.btn}
+      onClick={() => {
+        // Mark done
+      }}
+    >
+      Done
+    </div>
+  </div>
+)
+
+const Todo = ({ todo }) =>
+      todo.done
+      ? <TodoDone todo={todo} />
+      : <TodoUndone todo={todo} />
+
 export default bind(
   ({ todos }) => {
     // const { todos } = props;
@@ -43,7 +69,7 @@ export default bind(
       <div style={style.container}>
         <div style={style.todos}>
           <NewTask />
-          {todos.map(todo => <div>{todo.task}</div>)}
+          {todos.map(todo => <Todo todo={todo}/>)}
         </div>
       </div>
     )

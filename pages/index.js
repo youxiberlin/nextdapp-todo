@@ -1,5 +1,5 @@
 import { bind } from "nd"
-import { map } from "ramda"
+import { o, map, addIndex, sortBy } from "ramda"
 import style from "./style";
 import { useState } from "react"
 
@@ -42,18 +42,23 @@ const TodoDone = ({ todo }) => (
   </div>
 )
 
-const TodoUndone = ({ todo }) => (
-  <div style={style.todo}>
-    <div style={style.task}>{todo.task}</div>
-    <div
-      style={style.btn}
-      onClick={() => {
-        // Mark done
-      }}
-    >
-      Done
-    </div>
-  </div>
+const TodoUndone = bind(
+  ({ todo, init }) => {
+    const fn = init()
+    return (
+      <div style={style.todo}>
+        <div style={style.task}>{todo.task}</div>
+        <div
+          style={style.btn}
+          onClick={() => {
+            fn.markDone({ todo })
+          }}
+        >
+          Done
+        </div>
+      </div>
+  )},
+  ["markDone"]
 )
 
 const Todo = ({ todo }) =>
@@ -69,7 +74,11 @@ export default bind(
       <div style={style.container}>
         <div style={style.todos}>
           <NewTask />
-          {todos.map(todo => <Todo todo={todo}/>)}
+          {o(
+          map(v => <Todo todo={v} />),
+          sortBy(v => (v.done ? 1 : 0))
+        )(todos)}
+          {/* {todos.map(todo => <Todo todo={todo}/>)} */}
         </div>
       </div>
     )

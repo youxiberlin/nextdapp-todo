@@ -1,3 +1,3 @@
 export default {
-  test: 3
+  todos: [{ task: "Add Todos to This List", key:1 }]
 }

@@ -5,7 +5,9 @@ import style from "./style";
 export default bind(
   ({ todos }) => (
     <div style={style.container}>
-      <div style={style.todos}>{map(v => <div>{v.task}</div>)(todos)}</div>
+      <div style={style.todos}>
+        <div>{todos.map(todo => <div>{todo.task}</div>)}</div>
+      </div>
     </div>
   ),
   ["todos"]

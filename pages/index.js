@@ -43,7 +43,8 @@ const TodoDone = ({ todo }) => (
 )
 
 const TodoUndone = bind(
-  ({ todo, init }) => {
+  (props) => {
+    const { todo, init } = props;
     const fn = init()
     return (
       <div style={style.todo}>
@@ -52,14 +53,24 @@ const TodoUndone = bind(
           style={style.btn}
           onClick={() => {
             fn.markDone({ todo })
+            // console.log('todo', todo)
+            // console.log('props.todos:', todos)
           }}
         >
           Done
         </div>
       </div>
   )},
-  ["markDone"]
+  [
+    "markDone",
+  ]
 )
+
+// sum: {
+//   get: atoms => ({ get }) => {
+//     return (get(atoms.count) || 0) + (get(atoms.count2) || 0)
+//   }
+// }
 
 const Todo = ({ todo }) =>
       todo.done
@@ -67,9 +78,10 @@ const Todo = ({ todo }) =>
       : <TodoUndone todo={todo} />
 
 export default bind(
-  ({ todos }) => {
+  ({ todos, getDoneRate }) => {
     // const { todos } = props;
     // console.log('todos', todos)
+
     return (
       <div style={style.container}>
         <div style={style.todos}>
@@ -78,10 +90,19 @@ export default bind(
           map(v => <Todo todo={v} />),
           sortBy(v => (v.done ? 1 : 0))
         )(todos)}
-          {/* {todos.map(todo => <Todo todo={todo}/>)} */}
         </div>
+        <div>{getDoneRate}</div>
       </div>
     )
   },
-  ["todos"]
+  [
+    "todos",
+    {
+      getDoneRate: {
+        get: atoms => ({ get }) => {
+          return get(atoms.todos).length
+        }
+      }
+    }
+  ]
 )

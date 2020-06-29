@@ -66,24 +66,17 @@ const TodoUndone = bind(
   ]
 )
 
-// sum: {
-//   get: atoms => ({ get }) => {
-//     return (get(atoms.count) || 0) + (get(atoms.count2) || 0)
-//   }
-// }
-
 const Todo = ({ todo }) =>
       todo.done
       ? <TodoDone todo={todo} />
       : <TodoUndone todo={todo} />
 
 export default bind(
-  ({ todos, getDoneRate }) => {
-    // const { todos } = props;
-    // console.log('todos', todos)
-
+  ({ todos, getDones }) => {
     return (
       <div style={style.container}>
+        <div>Done: {getDones}</div>
+        <div>{getDones * 2}</div>
         <div style={style.todos}>
           <NewTask />
           {o(
@@ -91,16 +84,17 @@ export default bind(
           sortBy(v => (v.done ? 1 : 0))
         )(todos)}
         </div>
-        <div>{getDoneRate}</div>
       </div>
     )
   },
   [
     "todos",
     {
-      getDoneRate: {
+      getDones: {
         get: atoms => ({ get }) => {
-          return get(atoms.todos).length
+          const todos = get(atoms.todos);
+          const dones = todos.filter(todo => todo.done === true);
+          return dones.length;
         }
       }
     }

@@ -71,13 +71,21 @@ const Todo = ({ todo }) =>
       ? <TodoDone todo={todo} />
       : <TodoUndone todo={todo} />
 
+const getDones = {
+  get: atoms => ({ get }) => {
+    const todos = get(atoms.todos);
+    const dones = todos.filter(todo => todo.done === true);
+    return dones.length;
+  }
+}
+
 export default bind(
   ({ todos, getDones }) => {
     return (
       <div style={style.container}>
-        <div>Done: {getDones}</div>
-        <div>{getDones * 2}</div>
         <div style={style.todos}>
+          <div style={style.todo}>Done: {getDones}</div>
+          <div style={style.todo}>{Math.floor((getDones / todos.length) * 100)} %</div>
           <NewTask />
           {o(
           map(v => <Todo todo={v} />),
@@ -90,13 +98,8 @@ export default bind(
   [
     "todos",
     {
-      getDones: {
-        get: atoms => ({ get }) => {
-          const todos = get(atoms.todos);
-          const dones = todos.filter(todo => todo.done === true);
-          return dones.length;
-        }
-      }
+      getDones
     }
   ]
 )
+
